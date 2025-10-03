@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Koperasi Sekolah</title>
+  <link rel="stylesheet" href="minr.css">
+</head>
+<body>
+  <header>
+    <h1>Koperasi Sekolah</h1>
+    <p>Sistem Penjualan Sederhana</p>
+  </header>
+
+  <div class="container">
+    <div class="products">
+      <!-- Produk awal -->
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/book.png" alt="Buku Tulis">
+        <h3>Buku Tulis</h3>
+        <p>Rp 5000</p>
+        <button onclick="addToCart('Buku Tulis',5000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/pen.png" alt="Pulpen">
+        <h3>Pulpen</h3>
+        <p>Rp 3000</p>
+        <button onclick="addToCart('Pulpen',3000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/pencil.png" alt="Pensil">
+        <h3>Pensil</h3>
+        <p>Rp 2000</p>
+        <button onclick="addToCart('Pensil',2000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/water-bottle.png" alt="Air Mineral">
+        <h3>Air Mineral</h3>
+        <p>Rp 4000</p>
+        <button onclick="addToCart('Air Mineral',4000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/bread.png" alt="Roti">
+        <h3>Roti</h3>
+        <p>Rp 7000</p>
+        <button onclick="addToCart('Roti',7000)">Tambah ke Keranjang</button>
+      </div>
+
+      <!-- Produk tambahan -->
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/eraser.png" alt="Penghapus">
+        <h3>Penghapus</h3>
+        <p>Rp 2000</p>
+        <button onclick="addToCart('Penghapus',2000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/ruler.png" alt="Penggaris Besi">
+        <h3>Penggaris Besi</h3>
+        <p>Rp 7000</p>
+        <button onclick="addToCart('Penggaris Besi',7000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/wafer.png" alt="Snack Wafer">
+        <h3>Snack Wafer</h3>
+        <p>Rp 4000</p>
+        <button onclick="addToCart('Snack Wafer',4000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/milk-carton.png" alt="Susu Kotak">
+        <h3>Susu Kotak</h3>
+        <p>Rp 6000</p>
+        <button onclick="addToCart('Susu Kotak',6000)">Tambah ke Keranjang</button>
+      </div>
+      <div class="product">
+        <img src="https://img.icons8.com/color/96/t-shirt.png" alt="Kaos Olahraga">
+        <h3>Kaos Olahraga</h3>
+        <p>Rp 35000</p>
+        <button onclick="addToCart('Kaos Olahraga',35000)">Tambah ke Keranjang</button>
+      </div>
+    </div>
+
+    <!-- Keranjang -->
+    <div class="cart">
+      <h2>Keranjang</h2>
+      <ul id="cart-items"></ul>
+      <p><b>Total: Rp <span id="total">0</span></b></p>
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <script src="www.js">
+   
+  </script>
+</body>
+</html>
