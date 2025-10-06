@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>MCP Official Marketplace — Contoh</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html,body { height: 100%; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#f5f7fb; color:#1f2937; }
+        a { color: inherit; text-decoration: none; }
+        img { display:block; max-width:100%; height:auto; }
+
+        /* ===== Header ===== */
+        .topbar {
+            background: linear-gradient(180deg,#2047a6,#163a8f);
+            color: #fff;
+            padding: 14px 20px;
+            display:flex;
+            align-items:center;
+            gap:18px;
+            position:sticky;
+            top:0;
+            z-index:50;
+        }
+        .brand { font-weight:700; font-size:18px; display:flex; align-items:center; gap:10px; }
+        .brand .logo {
+            width:36px; height:36px; border-radius:6px; background:#fff2; display:flex; align-items:center; justify-content:center; font-weight:700;
+        }
+        .nav { display:flex; gap:12px; margin-left:12px; opacity:0.95; }
+        .nav a { font-size:14px; padding:6px 10px; border-radius:6px; transition:background .15s; }
+        .nav a:hover { background:rgba(255,255,255,0.08); }
+        .header-right { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+        /* ===== Hero/Search ===== */
+        .hero {
+            background: linear-gradient(180deg, rgba(22,58,143,0.95), rgba(32,71,166,0.95));
+            color:#fff; padding:48px 20px 36px; text-align:center;
+            border-bottom-left-radius:12px; border-bottom-right-radius:12px;
+            box-shadow: 0 6px 24px rgba(16,24,40,0.08);
+        }
+        .hero h1 { font-size:28px; margin-bottom:8px; }
+        .hero p { opacity:0.9; margin-bottom:18px; max-width:800px; margin-left:auto; margin-right:auto; }
+        .searchbar {
+            max-width:760px; margin:0 auto; display:flex; gap:8px; align-items:center;
+            background: #fff; padding:10px; border-radius:999px;
+        }
+        .searchbar input { border:0; outline:0; flex:1; font-size:15px; padding:8px 12px; border-radius:999px; }
+        .searchbar button { background:#1f4ed8; color:#fff; border:0; padding:9px 16px; border-radius:999px; cursor:pointer; font-weight:600; }
+
+        /* ===== Container & Categories ===== */
+        .container { max-width:1140px; margin:20px auto; padding:0 16px; }
+        .categories {
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:18px;
+            justify-content: center;
+        }
+        .cat {
+            background:#fff; padding:14px 18px; border-radius:12px; box-shadow:0 4px 18px rgba(16,24,40,0.05);
+            display:flex; gap:12px; align-items:center; min-width:140px; cursor:pointer; transition:transform .12s;
+        }
+        .cat:hover { transform:translateY(-4px); }
+        .cat .icon {
+            width:44px; height:44px; border-radius:10px; background:linear-gradient(180deg,#eef2ff,#eef6ff); display:flex; align-items:center; justify-content:center; font-weight:700;
+        }
+        .cat small { display:block; color:#475569; font-size:13px; }
+
+        /* ===== Products Grid ===== */
+        .section-title { font-size:18px; font-weight:700; margin:6px 0 12px; color:#0f172a; }
+        .products { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+        .card {
+            background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(16,24,40,0.06); display:flex; flex-direction:column;
+        }
+        .card .thumb {
+            height:140px; background:linear-gradient(90deg,#eef2ff,#f0f9ff); display:flex; align-items:center; justify-content:center;
+            position:relative;
+        }
+        .card .thumb img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        .card .meta { padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:8px; }
+        .card .title { font-weight:600; font-size:15px; color:#0f172a; }
+        .card .desc { font-size:13px; color:#475569; flex:1; }
+        .card .row { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; }
+        .price { font-weight:700; color:#0b5cff; }
+        .btn { border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+        .btn-outline { background:#eff6ff; color:#1e3a8a; }
+        .btn-primary { background:#0b5cff; color:#fff; }
+
+        /* ===== Floating Cart ===== */
+        .cart-toggle {
+            position:fixed; right:18px; bottom:18px; background:#0b5cff; color:#fff; width:56px; height:56px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; box-shadow:0 12px 28px rgba(11,92,255,0.18); cursor:pointer; z-index:60;
+        }
+        .cart-panel {
+            position:fixed; right:18px; bottom:90px; width:360px; max-width:calc(100% - 32px); background:#fff; border-radius:12px; box-shadow:0 20px 40px rgba(2,6,23,0.12);
+            transform-origin:bottom right; padding:14px; display:none; z-index:70;
+        }
+        .cart-panel.open { display:block; }
+        .cart-item { display:flex; gap:10px; padding:8px 6px; align-items:center; border-bottom:1px dashed #eef2ff; }
+        .cart-item:last-child { border-bottom:0; }
+        .qty { display:flex; gap:6px; align-items:center; }
+        .small { font-size:13px; color:#475569; }
+
+        /* ===== Footer ===== */
+        footer { padding:20px; text-align:center; color:#64748b; margin-top:26px; }
+
+        /* ===== Responsive ===== */
+        @media (max-width:700px) {
+            .nav { display:none; }
+            .hero h1 { font-size:22px; }
+            .searchbar { padding:8px; }
+            .categories { justify-content:space-between; gap:8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="brand">
+            <div class="logo">M</div>
+            <div>
+                <div style="font-size:15px">DIKA MARKET</div>
+                <div style="font-size:12px; opacity:0.85;">DIKA Marketplace</div>
+            </div>
+        </div>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="#">Beranda</a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <a href="#"></a>
+        </nav>
+        <div class="header-right">
+            <div class="small"></div>
+            <div style="width:8px"></div>
+            <div style="background:#fff2; padding:6px 10px; border-radius:8px; font-weight:700;"></div>
+        </div>
+    </div>
+
+    <section class="hero">
+        <h1>DIKA Official Marketplace</h1>
+        <p>Cari dan beli produk sekolah: Makanan, Minuman dan Alat Tulis — semua di satu tempat.</p>
+        <div class="searchbar" role="search">
+            <input id="searchInput" placeholder="Cari produk, mis. 'buku tulis'..." aria-label="Cari produk"/>
+            <button id="searchBtn">Cari</button>
+        </div>
+    </section>
+
+    <main class="container">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <h2 class="section-title">Kategori Produk</h2>
+            <div class="small">Menampilkan <span id="productCount">0</span> produk</div>
+        </div>
+        <div class="categories" id="categoriesWrap">
+        </div>
+
+        <h3 class="section-title">Produk Unggulan</h3>
+        <div class="products" id="productsWrap" aria-live="polite">
+        </div>
+
+        <footer>
+            &copy; <span id="year"></span> MCP Marketplace — Contoh halaman statis
+        </footer>
+    </main>
+
+    <button class="cart-toggle" id="cartToggle" aria-label="Buka keranjang">
+        🛒 <span id="cartCountBadge" style="margin-left:6px; font-weight:700;">0</span>
+    </button>
+
+    <div class="cart-panel" id="cartPanel" aria-hidden="true">
+        <h4 style="margin-bottom:8px;">Keranjang</h4>
+        <div id="cartItems"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+            <div>
+                <div class="small">Total</div>
+                <div style="font-weight:800; font-size:18px;" id="cartTotal">Rp0</div>
+            </div>
+            <div>
+                <button class="btn btn-outline" id="clearCart">Bersihkan</button>
+                <button class="btn btn-primary" id="checkoutBtn" style="margin-left:8px;">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Sample Data =====
+        const categories = [
+            { id: 'minuman', name: 'Minuman', icon: 'M' },
+            { id: 'makanan', name: 'Makanan', icon: 'M' },
+            { id: 'alattulis', name: 'Alat Tulis', icon: 'A' },
+        ];
+
+        const products = [
+            { id: 'p1', title: 'Teh Pucuk Harum', category: 'minuman', price: 5000, desc: 'Teh melati terbaik dan menyegarkan.', thumbUrl: 'https://i.ibb.co/68nL5fS/tehpucuk.jpg' },
+            { id: 'p2', title: 'Indomie Goreng', category: 'makanan', price: 3500, desc: 'Mie instan favorit sepanjang masa.', thumbUrl: 'https://i.ibb.co/2N1g8R3/indomie.jpg' },
+            { id: 'p3', title: 'Pensil Faber-Castell', category: 'alattulis', price: 7000, desc: 'Pensil kayu berkualitas tinggi.', thumbUrl: 'https://i.ibb.co/jrb6J9C/pensil.jpg' },
+            { id: 'p4', title: 'Aqua Botol', category: 'minuman', price: 4000, desc: 'Air mineral untuk menjaga hidrasi.', thumbUrl: 'https://i.ibb.co/3kX484M/aqua.jpg' },
+            { id: 'p5', title: 'Buku Tulis Sidu', category: 'alattulis', price: 6000, desc: 'Buku tulis untuk catatan harian.', thumbUrl: 'https://i.ibb.co/q9Wj46x/buku.jpg' },
+            { id: 'p6', title: 'Roti Gandum Sari Roti', category: 'makanan', price: 12000, desc: 'Roti gandum yang sehat dan bergizi.', thumbUrl: 'https://i.ibb.co/g7D7yW6/roti.jpg' },
+            { id: 'p7', title: 'Pulpy Orange', category: 'minuman', price: 6000, desc: 'Minuman jus jeruk dengan bulir jeruk asli.', thumbUrl: 'https://i.ibb.co/1848g5H/pulpy.jpg' },
+            { id: 'p8', title: 'Pocky Cokelat', category: 'makanan', price: 9000, desc: 'Biskuit stik renyah rasa cokelat.', thumbUrl: 'https://i.ibb.co/6P6XyRk/pocky.jpg' },
+            { id: 'p9', title: 'Spidol Snowman', category: 'alattulis', price: 8000, desc: 'Spidol permanen untuk berbagai permukaan.', thumbUrl: 'https://i.ibb.co/p61vJ9g/spidol.jpg' }
+        ];
+
+        // ===== Utilities =====
+        const rupiah = (n) => {
+            if (n === 0) return 'Gratis';
+            return 'Rp' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        };
+
+        // ===== Render categories =====
+        const categoriesWrap = document.getElementById('categoriesWrap');
+        categories.forEach(cat => {
+            const el = document.createElement('div');
+            el.className = 'cat';
+            el.setAttribute('data-cat', cat.id);
+            el.innerHTML = `
+                <div class="icon" aria-hidden="true">${cat.icon}</div>
+                <div>
+                    <div style="font-weight:700">${cat.name}</div>
+                    <small class="small">Klik untuk filter</small>
+                </div>
+            `;
+            el.addEventListener('click', () => { filterByCategory(cat.id); });
+            categoriesWrap.appendChild(el);
+        });
+
+        // ===== Render products =====
+        const productsWrap = document.getElementById('productsWrap');
+        const productCount = document.getElementById('productCount');
+
+        function renderProducts(list) {
+            productsWrap.innerHTML = '';
+            list.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="thumb" aria-hidden="true">
+                        <img src="${p.thumbUrl}" alt="${p.title}">
+                    </div>
+                    <div class="meta">
+                        <div class="title">${p.title}</div>
+                        <div class="desc">${p.desc}</div>
+                        <div class="row">
+                            <div class="price">${rupiah(p.price)}</div>
+                            <div>
+                                <button class="btn btn-outline" data-id="${p.id}">Lihat</button>
+                                <button class="btn btn-primary" data-add="${p.id}" style="margin-left:8px;">Beli</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productsWrap.appendChild(card);
+            });
+
+            productCount.textContent = list.length;
+            document.querySelectorAll('[data-add]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-add');
+                    addToCart(id);
+                });
+            });
+            document.querySelectorAll('[data-id]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    showProductModal(id);
+                });
+            });
+        }
+
+        // initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+        });
+
+        // ===== Search & Filter =====
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        searchBtn.addEventListener('click', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            const filtered = products.filter(p => p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+            renderProducts(filtered);
+        });
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') searchBtn.click();
+        });
+
+        function filterByCategory(catId) {
+            const filtered = products.filter(p => p.category === catId);
+            renderProducts(filtered);
+        }
+
+        // ===== Simple Product Modal (alert style) =====
+        function showProductModal(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            alert(`${p.title}\n\n${p.desc}\n\nHarga: ${rupiah(p.price)}`);
+        }
+
+        // ===== Cart Logic =====
+        let cart = {}; // id -> qty
+        const cartToggle = document.getElementById('cartToggle');
+        const cartPanel = document.getElementById('cartPanel');
+        const cartItemsWrap = document.getElementById('cartItems');
+        const cartTotalEl = document.getElementById('cartTotal');
+        const cartCountBadge = document.getElementById('cartCountBadge');
+        const clearCartBtn = document.getElementById('clearCart');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        function saveCart() {
+            try { localStorage.setItem('mcp_cart', JSON.stringify(cart)); } catch(e){}
+            renderCart();
+        }
+
+        function loadCart() {
+            try {
+                const raw = localStorage.getItem('mcp_cart');
+                if (raw) cart = JSON.parse(raw);
+            } catch(e){ cart = {}; }
+            renderCart();
+        }
+
+        function addToCart(id) {
+            if (!cart[id]) cart[id] = 0;
+            cart[id] += 1;
+            saveCart();
+            flashCart();
+        }
+
+        function removeFromCart(id) {
+            delete cart[id];
+            saveCart();
+        }
+
+        function changeQty(id, delta) {
+            if (!cart[id]) return;
+            cart[id] += delta;
+            if (cart[id] <= 0) delete cart[id];
+            saveCart();
+        }
+
+        function renderCart() {
+            cartItemsWrap.innerHTML = '';
+            const ids = Object.keys(cart);
+            if (ids.length === 0) {
+                cartItemsWrap.innerHTML = '<div class="small" style="padding:8px 6px;">Keranjang kosong</div>';
+                cartTotalEl.textContent = rupiah(0);
+                cartCountBadge.textContent = '0';
+                return;
+            }
+
+            let total = 0, totalQty = 0;
+            ids.forEach(id => {
+                const p = products.find(x => x.id === id);
+                const qty = cart[id];
+                total += (p.price || 0) * qty;
+                totalQty += qty;
+
+                const item = document.createElement('div');
+                item.className = 'cart-item';
+                item.innerHTML = `
+                    <div style="width:44px; height:44px; border-radius:8px; background:#eef2ff; display:flex; align-items:center; justify-content:center; font-weight:700;">${p.title[0] || 'P'}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700">${p.title}</div>
+                        <div class="small">${rupiah(p.price)} • x ${qty}</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                        <div style="font-weight:800">${rupiah((p.price||0)*qty)}</div>
+                        <div class="qty">
+                            <button class="btn btn-outline" data-dec="${id}" style="padding:6px 8px;">−</button>
+                            <button class="btn btn-outline" data-inc="${id}" style="padding:6px 8px;">+</button>
+                        </div>
+                    </div>
+                `;
+                cartItemsWrap.appendChild(item);
+            });
+
+            cartTotalEl.textContent = rupiah(total);
+            cartCountBadge.textContent = totalQty;
+
+            cartItemsWrap.querySelectorAll('[data-inc]').forEach(b => {
+                b.addEventListener('click', (e) => {
+                    changeQty(e.currentTarget.getAttribute('data-inc'), 1);
+                });
+            });
+            cartItemsWrap.querySelectorAll('[data-dec]').forEach(b => {
+                b.addEventListener('click', (e) => {
+                    changeQty(e.currentTarget.getAttribute('data-dec'), -1);
+                });
+            });
+        }
+
+        function flashCart() {
+            cartPanel.classList.add('open');
+            setTimeout(() => { cartPanel.classList.remove('open'); }, 2200);
+            renderCart();
+        }
+
+        cartToggle.addEventListener('click', () => {
+            const open = cartPanel.classList.toggle('open');
+            cartPanel.setAttribute('aria-hidden', !open);
+        });
+
+        clearCartBtn.addEventListener('click', () => {
+            if (!confirm('Bersihkan keranjang?')) return;
+            cart = {};
+            saveCart();
+        });
+
+        checkoutBtn.addEventListener('click', () => {
+            const ids = Object.keys(cart);
+            if (!ids.length) { alert('Keranjang kosong.'); return; }
+            let summary = 'Pesanan:\n\n';
+            let total=0;
+            ids.forEach(id=>{
+                const p = products.find(x=>x.id===id);
+                const qty = cart[id];
+                summary += `${p.title} x${qty} — ${rupiah((p.price||0)*qty)}\n`;
+                total += (p.price||0)*qty;
+            });
+            summary += `\nTotal: ${rupiah(total)}\n\nTerima kasih — ini hanya demo.`;
+            alert(summary);
+            cart = {};
+            saveCart();
+        });
+
+        // ===== On load =====
+        document.getElementById('year').textContent = new Date().getFullYear();
+        loadCart();
+
+        document.addEventListener('keydown', (e)=>{
+            if (e.key.toLowerCase() === 'c') {
+                cartToggle.click();
+            }
+        });
+    </script>
+</body>
+</html>
