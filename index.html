@@ -17,15 +17,16 @@
       color: #fff;
       text-align: center;
       padding: 20px 0;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .market-container {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 30px auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 20px;
       padding: 0 20px;
     }
@@ -34,13 +35,14 @@
       background: white;
       border-radius: 16px;
       padding: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       text-align: center;
-      transition: 0.3s;
+      transition: 0.3s ease;
     }
 
     .product-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
     }
 
     .product-img {
@@ -52,13 +54,15 @@
 
     .product-name {
       font-weight: 600;
-      margin: 10px 0 5px;
+      margin: 12px 0 5px;
+      font-size: 18px;
     }
 
     .product-price {
       color: #2563eb;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 500;
+      margin-bottom: 10px;
     }
 
     .qty-input {
@@ -70,20 +74,74 @@
       margin: 8px 0;
     }
 
+    .order-btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-weight: 500;
+    }
+
+    .order-btn:hover {
+      background: #16a34a;
+      transform: scale(1.03);
+    }
+
+    /* Keranjang */
+    .cart-container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    .cart-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .cart-list {
+      border-top: 1px solid #eee;
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      font-size: 15px;
+    }
+
     .checkout-btn {
       background: #2563eb;
       color: white;
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.2s;
+      margin-top: 15px;
+      font-weight: 500;
+      transition: 0.3s ease;
     }
 
     .checkout-btn:hover {
-      transform: scale(1.03);
+      background: #1e40af;
+      transform: scale(1.02);
+    }
+
+    .empty {
+      text-align: center;
+      color: #999;
+      font-style: italic;
     }
   </style>
 </head>
@@ -91,53 +149,99 @@
 
   <header>MCP Official Marketplace</header>
 
+  <!-- List Produk -->
   <div class="market-container">
-
-    <!-- Produk 1 -->
     <div class="product-card">
       <img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png" class="product-img" alt="Pulpen">
       <p class="product-name">Pulpen</p>
       <p class="product-price">Rp 5.000</p>
       <input type="number" id="qty1" class="qty-input" value="1" min="1">
-      <button class="checkout-btn" onclick="checkout('Pulpen', 5000, 'qty1')">🛒 Checkout</button>
+      <button class="order-btn" onclick="addToCart('Pulpen', 5000, 'qty1')">🛍️ Order</button>
     </div>
 
-    <!-- Produk 2 -->
     <div class="product-card">
       <img src="https://cdn-icons-png.flaticon.com/512/1530/1530346.png" class="product-img" alt="Buku Tulis">
       <p class="product-name">Buku Tulis</p>
       <p class="product-price">Rp 10.000</p>
       <input type="number" id="qty2" class="qty-input" value="1" min="1">
-      <button class="checkout-btn" onclick="checkout('Buku Tulis', 10000, 'qty2')">🛒 Checkout</button>
+      <button class="order-btn" onclick="addToCart('Buku Tulis', 10000, 'qty2')">🛍️ Order</button>
     </div>
 
-    <!-- Produk 3 -->
     <div class="product-card">
       <img src="https://cdn-icons-png.flaticon.com/512/2844/2844697.png" class="product-img" alt="Penggaris">
       <p class="product-name">Penggaris</p>
       <p class="product-price">Rp 3.000</p>
       <input type="number" id="qty3" class="qty-input" value="1" min="1">
-      <button class="checkout-btn" onclick="checkout('Penggaris', 3000, 'qty3')">🛒 Checkout</button>
+      <button class="order-btn" onclick="addToCart('Penggaris', 3000, 'qty3')">🛍️ Order</button>
     </div>
 
+    <div class="product-card">
+      <img src="https://cdn-icons-png.flaticon.com/512/991/991952.png" class="product-img" alt="Pensil">
+      <p class="product-name">Pensil</p>
+      <p class="product-price">Rp 2.000</p>
+      <input type="number" id="qty4" class="qty-input" value="1" min="1">
+      <button class="order-btn" onclick="addToCart('Pensil', 2000, 'qty4')">🛍️ Order</button>
+    </div>
+  </div>
+
+  <!-- Keranjang -->
+  <div class="cart-container">
+    <div class="cart-title">🛒 Keranjang Belanja</div>
+    <div id="cart-list" class="cart-list empty">Belum ada item dipesan.</div>
+    <button id="checkout-btn" class="checkout-btn" onclick="checkoutAll()" disabled>💳 Checkout Semua</button>
   </div>
 
   <script>
-    // URL Google Apps Script kamu
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec";
+    let cart = [];
 
-    function checkout(productName, price, qtyId) {
-      const quantity = parseInt(document.getElementById(qtyId).value);
-      const subtotal = price * quantity;
-      const total = subtotal; // karena hanya satu produk per transaksi
+    function addToCart(name, price, qtyId) {
+      const qty = parseInt(document.getElementById(qtyId).value);
+      if (qty <= 0) return alert("Jumlah harus lebih dari 0!");
+
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.quantity += qty;
+        existing.subtotal = existing.quantity * price;
+      } else {
+        cart.push({ name, quantity: qty, price, subtotal: qty * price });
+      }
+
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartList = document.getElementById("cart-list");
+      const checkoutBtn = document.getElementById("checkout-btn");
+
+      if (cart.length === 0) {
+        cartList.innerHTML = "<div class='empty'>Belum ada item dipesan.</div>";
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      checkoutBtn.disabled = false;
+      cartList.innerHTML = cart.map(item =>
+        `<div class='cart-item'>
+          <span>${item.name} (${item.quantity}x)</span>
+          <span>Rp ${item.subtotal.toLocaleString()}</span>
+        </div>`
+      ).join("");
+
+      const total = cart.reduce((a, b) => a + b.subtotal, 0);
+      cartList.innerHTML += `<hr><div class='cart-item'><b>Total:</b> <b>Rp ${total.toLocaleString()}</b></div>`;
+    }
+
+    function checkoutAll() {
+      if (cart.length === 0) return alert("Keranjang masih kosong!");
+
+      const total = cart.reduce((a, b) => a + b.subtotal, 0);
 
       const data = {
-        transactionId: "ORDER-" + Math.floor(Math.random() * 10000),
+        transactionId: "ORDER-" + Math.floor(Math.random() * 100000),
         timestamp: Date.now(),
         total: total,
-        items: [
-          { name: productName, quantity: quantity, price: price, subtotal: subtotal }
-        ]
+        items: cart
       };
 
       fetch(SCRIPT_URL, {
@@ -147,13 +251,14 @@
         body: JSON.stringify(data)
       })
       .then(() => {
-        alert(`✅ ${productName} (${quantity}x) berhasil dikirim ke Google Sheet!`);
+        alert("✅ Semua item berhasil dikirim ke Google Sheet!");
+        cart = [];
+        renderCart();
       })
       .catch(error => {
         alert("❌ Gagal kirim: " + error);
       });
     }
   </script>
-
 </body>
 </html>
