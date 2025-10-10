@@ -416,7 +416,29 @@
         window.addToCart = addToCart;
         window.removeFromCart = removeFromCart;
         window.checkout = checkout;
+        fetch("https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec", {
+  method: "POST",
+  mode: "no-cors", // 🔹 penting kalau dari GitHub Pages
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    transactionId: "TEST-001",
+    timestamp: Date.now(),
+    total: 15000,
+    items: [
+      { name: "Pulpen", quantity: 3, price: 5000, subtotal: 15000 }
+    ]
+  })
+})
+.then(() => {
+  alert("✅ Transaksi berhasil dikirim!");
+})
+.catch(error => {
+  alert("❌ Gagal kirim: " + error);
+});
 
     </script>
 </body>
 </html>
+
