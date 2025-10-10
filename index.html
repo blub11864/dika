@@ -1,444 +1,122 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penjualan & Rekap Otomatis Koperasi</title>
-    <!-- Memuat Tailwind CSS untuk styling yang cepat dan responsif -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Menggunakan font Inter dan memastikan body mengisi seluruh viewport */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* light blue-50 */
-            min-height: 100vh;
-        }
-        /* Custom scrollbar untuk cart */
-        #cart-items {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP Official Marketplace</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f8fafc;
+      color: #333;
+    }
+    header {
+      background: #1e293b;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: 0.2s ease;
+    }
+    button:hover {
+      transform: scale(1.03);
+    }
+    .checkout-btn {
+      background: #2563eb;
+      color: white;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .test-btn {
+      background: #22c55e;
+      color: white;
+      width: 100%;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Main Application Container -->
-    <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-indigo-700">Sistem Penjualan Kasir Digital Koperasi Sekolah</h1>
-            <p class="text-xl text-gray-600 mt-2">Kelola pesanan alat tulis, makanan ringan, dan kirim rekap otomatis</p>
-        </header>
+  <header>MCP Official Marketplace</header>
 
-        <!-- Notification/Loading Area -->
-        <div id="message-box" class="fixed top-5 right-5 z-50 transition-opacity duration-300"></div>
+  <div class="container">
+    <h3>🛍️ Checkout Produk</h3>
+    <p><b>Produk:</b> Pulpen</p>
+    <p><b>Harga:</b> Rp 5.000</p>
+    <p><b>Jumlah:</b> 3</p>
+    <p><b>Total:</b> Rp 15.000</p>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <button class="checkout-btn" onclick="checkout()">💳 Checkout Sekarang</button>
+    <button class="test-btn" onclick="testKirim()">🔧 Tes Koneksi Google Sheet</button>
+  </div>
 
-            <!-- 1. Product List Section -->
-            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-                <h2 class="text-2xl font-bold mb-5 text-gray-700 border-b pb-3">Daftar Produk Koperasi (14 Item)</h2>
-                <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    <!-- Products will be rendered here by JavaScript -->
-                </div>
-            </div>
+  <script>
+    // 🔹 Fungsi utama untuk kirim data checkout asli
+    function checkout() {
+      const data = {
+        transactionId: "ORDER-" + Math.floor(Math.random() * 10000),
+        timestamp: Date.now(),
+        total: 15000,
+        items: [
+          { name: "Pulpen", quantity: 3, price: 5000, subtotal: 15000 }
+        ]
+      };
 
-            <!-- 2. Cart/Checkout Section -->
-            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-100 sticky top-4">
-                <h2 class="text-2xl font-bold mb-4 text-gray-700 border-b pb-3 flex justify-between items-center">
-                    Keranjang Belanja
-                    <span id="cart-count" class="text-sm font-semibold text-white bg-indigo-500 rounded-full h-6 w-6 flex items-center justify-center">0</span>
-                </h2>
+      fetch("https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec", {
+        method: "POST",
+        mode: "no-cors", // biar tidak error CORS di GitHub Pages
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        alert("✅ Transaksi berhasil dikirim ke Google Sheet!");
+      })
+      .catch(error => {
+        alert("❌ Gagal kirim: " + error);
+      });
+    }
 
-                <!-- Pesan keranjang kosong. Dipindahkan untuk mencegah error saat render. -->
-                <p id="empty-cart-message" class="text-gray-500 italic text-center mb-4">Keranjang masih kosong.</p>
+    // 🔧 Fungsi untuk tes koneksi manual ke Google Sheet
+    function testKirim() {
+      fetch("https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          transactionId: "TEST-001",
+          timestamp: Date.now(),
+          total: 15000,
+          items: [
+            { name: "Pulpen", quantity: 3, price: 5000, subtotal: 15000 }
+          ]
+        })
+      })
+      .then(() => {
+        alert("✅ Data test berhasil dikirim! Silakan cek sheet 'Transaksi'");
+      })
+      .catch(error => {
+        alert("❌ Gagal kirim: " + error);
+      });
+    }
+  </script>
 
-                <div id="cart-items" class="space-y-4 mb-6">
-                    <!-- Cart items will be rendered here by JavaScript -->
-                </div>
-                
-                <div id="cart-summary" class="border-t pt-4 space-y-2">
-                    <div class="flex justify-between font-medium text-lg text-gray-700">
-                        <span>Total Harga:</span>
-                        <span id="cart-total" class="text-green-600 font-extrabold">Rp 0</span>
-                    </div>
-                </div>
-
-                <button id="checkout-button" onclick="checkout()"
-                    class="mt-6 w-full py-3 bg-indigo-600 text-white font-semibold text-lg rounded-lg hover:bg-indigo-700 transition duration-300 shadow-lg disabled:bg-gray-400"
-                    disabled>
-                    Proses Checkout & Kirim Rekap
-                </button>
-            </div>
-        </div>
-
-        <!-- 3. Recap/Log Section -->
-        <div class="mt-8 bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <h2 class="text-2xl font-bold mb-5 text-gray-700 border-b pb-3">Rekap Transaksi Terakhir (Lokal)</h2>
-            <div id="recap-log" class="space-y-4">
-                <p class="text-gray-500 italic text-center">Belum ada transaksi yang tercatat.</p>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // --- Konfigurasi dan State Aplikasi ---
-
-        // !!! PENTING: Ganti URL ini dengan URL Web App (kode.gs) Anda setelah di-deploy !!!
-        // URL tiruan ini akan menghasilkan pesan error spesifik saat checkout, yang menunjukkan bahwa integrasi belum selesai.
-        const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec";
-
-        let products = [
-            // Alat Tulis
-            { id: 1, name: "Buku Tulis Sinar Dunia (38 Lbr)", price: 5000, stock: 50 },
-            { id: 2, name: "Pulpen Gel Hitam 0.5mm", price: 3500, stock: 80 },
-            { id: 3, name: "Pensil 2B Faber-Castell", price: 2000, stock: 100 },
-            { id: 4, name: "Penghapus Karet Kenko", price: 1500, stock: 120 },
-            { id: 5, name: "Penggaris Plastik 30cm", price: 4500, stock: 45 },
-            { id: 6, name: "Binder A5 Motif", price: 25000, stock: 15 },
-            { id: 7, name: "Tip-Ex Cair Joyko", price: 7000, stock: 25 },
-            // Makanan & Minuman
-            { id: 8, name: "Air Mineral Botol 600ml", price: 4000, stock: 60 },
-            { id: 9, name: "Teh Kotak Manis 200ml", price: 4500, stock: 75 },
-            { id: 10, name: "Wafer Nabati Keju (Pack Kecil)", price: 8000, stock: 55 },
-            { id: 11, name: "Roti Isi Cokelat Kemasan", price: 6000, stock: 40 },
-            { id: 12, name: "Mie Instan Cup (Rasa Ayam)", price: 7500, stock: 30 },
-            // Perlengkapan Seragam
-            { id: 13, name: "Kaos Kaki Putih Sekolah", price: 15000, stock: 20 },
-            { id: 14, name: "Dasi Sekolah (SMP/SMA)", price: 18000, stock: 10 },
-        ];
-
-        let cart = []; // Format: { productId: 1, quantity: 2 }
-        let recapLog = []; // Menyimpan log transaksi di sesi lokal
-
-        // --- Utility Functions (Rupiah Formatting, Notifications) ---
-
-        function formatRupiah(number) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(number);
-        }
-
-        function showNotification(message, type = 'info') {
-            const box = document.getElementById('message-box');
-            let colorClass = '';
-            let icon = '';
-            const existingLoading = document.getElementById('current-loading-notification');
-            
-            // Jika notifikasi baru adalah 'loading', dan sudah ada loading, jangan buat yang baru
-            if (type === 'loading' && existingLoading) return;
-            // Jika ada notifikasi baru, hapus loading yang lama
-            if (type !== 'loading' && existingLoading) existingLoading.remove();
-
-            switch (type) {
-                case 'success':
-                    colorClass = 'bg-green-500 border-green-700'; icon = '✅'; break;
-                case 'error':
-                    colorClass = 'bg-red-500 border-red-700'; icon = '❌'; break;
-                case 'loading':
-                    colorClass = 'bg-yellow-500 border-yellow-700'; icon = '⏳'; break;
-                default:
-                    colorClass = 'bg-blue-500 border-blue-700'; icon = 'ℹ️';
-            }
-
-            const element = document.createElement('div');
-            element.className = `p-4 m-2 rounded-lg text-white shadow-xl ${colorClass} transition duration-300`;
-            element.innerHTML = `<div class="flex items-center space-x-2"><div class="text-xl">${icon}</div><div>${message}</div></div>`;
-
-            box.appendChild(element);
-
-            if (type !== 'loading') {
-                setTimeout(() => { element.remove(); }, 4000);
-            } else {
-                element.id = 'current-loading-notification';
-            }
-        }
-
-        function hideLoadingNotification() {
-            const loadingNotif = document.getElementById('current-loading-notification');
-            if (loadingNotif) { loadingNotif.remove(); }
-        }
-
-        // --- Rendering Functions ---
-
-        function renderProducts() {
-            const list = document.getElementById('product-list');
-            list.innerHTML = ''; 
-
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = "bg-gray-50 p-4 rounded-xl shadow-md hover:shadow-lg transition duration-200 border border-gray-200";
-                card.innerHTML = `
-                    <h3 class="text-lg font-semibold text-gray-800">${product.name}</h3>
-                    <p class="text-xl font-bold text-indigo-600 mt-1">${formatRupiah(product.price)}</p>
-                    <p class="text-sm text-gray-500 mt-2">Stok: <span id="stock-${product.id}" class="font-medium ${product.stock > 0 ? 'text-green-500' : 'text-red-500'}">${product.stock}</span></p>
-                    <button onclick="addToCart(${product.id})" ${product.stock <= 0 ? 'disabled' : ''}
-                        class="mt-3 w-full py-2 bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-600 transition duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        Tambah ke Keranjang
-                    </button>
-                `;
-                list.appendChild(card);
-            });
-        }
-
-        function renderCart() {
-            const itemsContainer = document.getElementById('cart-items');
-            const totalElement = document.getElementById('cart-total');
-            const countElement = document.getElementById('cart-count');
-            const checkoutButton = document.getElementById('checkout-button');
-            const emptyMessage = document.getElementById('empty-cart-message'); // Sekarang elemen ini tidak terhapus
-
-            itemsContainer.innerHTML = '';
-            let total = 0;
-            let totalItems = 0;
-
-            if (cart.length === 0) {
-                emptyMessage.style.display = 'block';
-                checkoutButton.disabled = true;
-            } else {
-                emptyMessage.style.display = 'none';
-                checkoutButton.disabled = false;
-            }
-
-            cart.forEach(item => {
-                const product = products.find(p => p.id === item.productId);
-                if (product) {
-                    const subtotal = product.price * item.quantity;
-                    total += subtotal;
-                    totalItems += item.quantity;
-
-                    const itemElement = document.createElement('div');
-                    itemElement.className = "flex items-center justify-between p-3 bg-indigo-50 rounded-lg";
-                    itemElement.innerHTML = `
-                        <div class="flex-grow">
-                            <p class="font-semibold text-gray-800">${product.name}</p>
-                            <p class="text-sm text-gray-600">${item.quantity} x ${formatRupiah(product.price)}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-lg text-indigo-700">${formatRupiah(subtotal)}</p>
-                            <button onclick="removeFromCart(${product.id})" class="text-red-500 hover:text-red-700 text-sm mt-1 transition duration-200">Hapus</button>
-                        </div>
-                    `;
-                    itemsContainer.appendChild(itemElement);
-                }
-            });
-
-            totalElement.textContent = formatRupiah(total);
-            countElement.textContent = totalItems;
-        }
-
-        function renderRecapLog() {
-            const logContainer = document.getElementById('recap-log');
-            logContainer.innerHTML = '';
-
-            if (recapLog.length === 0) {
-                logContainer.innerHTML = '<p class="text-gray-500 italic text-center">Belum ada transaksi yang tercatat.</p>';
-                return;
-            }
-
-            // Tampilkan log terbaru di atas
-            const reversedLog = [...recapLog].reverse(); 
-
-            reversedLog.forEach((log, index) => {
-                const detailItems = log.items.map(item =>
-                    `${item.name} (${item.quantity}x)`
-                ).join(', ');
-
-                const logEntry = document.createElement('div');
-                logEntry.className = "p-4 bg-gray-50 border-l-4 border-indigo-500 rounded-lg shadow-sm";
-                logEntry.innerHTML = `
-                    <p class="font-bold text-gray-700">Transaksi #${recapLog.length - index} - ${new Date(log.timestamp).toLocaleString('id-ID')}</p>
-                    <p class="text-lg font-extrabold text-green-600">${formatRupiah(log.total)}</p>
-                    <p class="text-sm text-gray-600 mt-1">Detail: ${detailItems}</p>
-                `;
-                logContainer.appendChild(logEntry);
-            });
-        }
-
-        // --- Cart Logic Functions ---
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product || product.stock <= 0) {
-                showNotification(`Stok ${product.name} habis!`, 'error');
-                return;
-            }
-
-            let cartItem = cart.find(item => item.productId === productId);
-
-            if (cartItem) {
-                cartItem.quantity += 1;
-            } else {
-                cart.push({ productId, quantity: 1 });
-            }
-
-            product.stock -= 1;
-            renderProducts();
-            renderCart();
-            showNotification(`${product.name} ditambahkan.`, 'info');
-        }
-
-        function removeFromCart(productId) {
-            const itemIndex = cart.findIndex(item => item.productId === productId);
-
-            if (itemIndex > -1) {
-                const item = cart[itemIndex];
-                const product = products.find(p => p.id === productId);
-
-                if (product) {
-                    product.stock += item.quantity;
-                }
-
-                cart.splice(itemIndex, 1);
-                renderProducts();
-                renderCart();
-                showNotification(`Item dihapus.`, 'info');
-            }
-        }
-
-        // --- Google Sheet Integration and Checkout (with Retry/Backoff) ---
-
-        async function sendToGoogleSheet(data) {
-            // Cek ini tetap dipertahankan untuk melempar error spesifik jika URL tiruan masih digunakan.
-            if (GOOGLE_SHEET_WEB_APP_URL.includes("dummy_url_for_testing")) {
-                throw new Error("Gagal total mengirim data: URL masih menggunakan dummy. Ganti dengan URL Web App Anda yang sebenarnya.");
-            }
-
-            const maxRetries = 3;
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(GOOGLE_SHEET_WEB_APP_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error("Server Response Error:", errorText);
-                        throw new Error(`Gagal (Status: ${response.status}). Cek Konsol dan Log Apps Script.`);
-                    }
-
-                    const result = await response.json();
-
-                    if (result.status === 'success') {
-                        return result;
-                    } else {
-                        throw new Error(`Google Sheet Error: ${result.message}`);
-                    }
-
-                } catch (error) {
-                    console.error(`Percobaan ${attempt} gagal:`, error.message);
-                    if (attempt === maxRetries) {
-                        throw new Error(`Gagal total mengirim data: ${error.message}`);
-                    }
-                    // Tunggu sebelum mencoba lagi (Exponential Backoff: 1s, 2s, 4s)
-                    const delay = Math.pow(2, attempt) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
-            }
-        }
-
-        async function checkout() {
-            if (cart.length === 0) {
-                showNotification("Keranjang belanja kosong.", 'error');
-                return;
-            }
-
-            document.getElementById('checkout-button').disabled = true;
-            showNotification('Mengirim data transaksi...', 'loading');
-
-            let total = 0;
-            const transactionItems = cart.map(item => {
-                const product = products.find(p => p.id === item.productId);
-                const subtotal = product.price * item.quantity;
-                total += subtotal;
-                return {
-                    name: product.name,
-                    quantity: item.quantity,
-                    price: product.price,
-                    subtotal: subtotal
-                };
-            });
-
-            const transactionData = {
-                transactionId: crypto.randomUUID(),
-                timestamp: new Date().toISOString(),
-                total: total,
-                items: transactionItems
-            };
-
-            try {
-                // 1. Kirim data ke Google Sheets
-                await sendToGoogleSheet(transactionData);
-                hideLoadingNotification();
-                showNotification('Checkout berhasil! Data direkap ke Google Sheet.', 'success');
-
-                // 2. Catat log lokal
-                recapLog.push(transactionData);
-                renderRecapLog();
-
-                // 3. Reset keranjang
-                cart = [];
-                renderCart();
-
-            } catch (error) {
-                hideLoadingNotification();
-                
-                // Jika pengiriman gagal, kembalikan stok
-                transactionItems.forEach(item => {
-                    const product = products.find(p => p.name === item.name);
-                    if (product) {
-                        const currentProduct = products.find(p => p.id === product.id);
-                        if(currentProduct) currentProduct.stock += item.quantity;
-                    }
-                });
-                renderProducts(); // Render ulang untuk menampilkan stok yang dikembalikan
-
-                showNotification(`Checkout Gagal! ${error.message}`, 'error');
-                document.getElementById('checkout-button').disabled = false;
-            }
-        }
-
-        // --- Initialization ---
-        window.onload = function() {
-            renderProducts();
-            renderCart();
-            renderRecapLog();
-        };
-
-        // Memaparkan fungsi ke window agar dapat dipanggil langsung dari HTML
-        window.addToCart = addToCart;
-        window.removeFromCart = removeFromCart;
-        window.checkout = checkout;
-        fetch("https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec", {
-  method: "POST",
-  mode: "no-cors", // 🔹 penting kalau dari GitHub Pages
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    transactionId: "TEST-001",
-    timestamp: Date.now(),
-    total: 15000,
-    items: [
-      { name: "Pulpen", quantity: 3, price: 5000, subtotal: 15000 }
-    ]
-  })
-})
-.then(() => {
-  alert("✅ Transaksi berhasil dikirim!");
-})
-.catch(error => {
-  alert("❌ Gagal kirim: " + error);
-});
-
-    </script>
 </body>
 </html>
-
