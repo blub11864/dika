@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MCP Marketplace - Final with Loading</title>
+  <title>MCP Marketplace - Kategori Produk</title>
   <style>
     :root{
       --bg:#f8fafc; --card:#fff; --accent:#2563eb; --green:#16a34a;
@@ -11,27 +11,39 @@
     }
     *{box-sizing:border-box}
     body {
-        font-family: Inter, system-ui, Arial;
-        margin: 0;
-        background-image: url(market.jpg);
-        background-repeat: no-repeat;       /* ⛔ supaya tidak ngeloop */
-        background-size: cover;             /* 🧩 supaya menutupi seluruh layar */
-        background-position: center center; /* 🎯 posisi gambar di tengah */
-        background-attachment: fixed;       /* 📌 biar gambar tidak ikut scroll */
+      font-family: Inter, system-ui, Arial;
+      margin: 0;
+      background-image: url(market.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
     }
     body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255,255,255,0.7); /* putih transparan */
-  z-index: -1;
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.7);
+      z-index: -1;
     }
-
     header{
       background:#0f172a; color:#fff; padding:18px 12px; text-align:center;
       font-weight:700; letter-spacing:0.4px;
     }
     .wrap{max-width:1000px; margin:22px auto; padding:0 16px;}
+
+    /* ====== FILTER DROPDOWN ====== */
+    .filter-bar {
+      display:flex;
+      justify-content:flex-end;
+      margin-bottom:14px;
+    }
+    select {
+      padding:8px 12px;
+      border-radius:8px;
+      border:1px solid #cbd5e1;
+      font-weight:600;
+    }
 
     .grid{
       display:grid;
@@ -48,7 +60,6 @@
     .title{ font-weight:700; font-size:15px }
     .price{ color:var(--accent); font-weight:600 }
     .stock{ color:var(--muted); font-size:13px }
-
     .controls{ margin-top:auto; display:flex; gap:8px; align-items:center; justify-content:flex-end }
     .controls .btn { padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:600 }
     .btn-order{ background:var(--green); color:#fff }
@@ -65,79 +76,48 @@
     .clear-cart{ background:#ef4444; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer }
     .hint{ font-size:13px; color:var(--muted) }
 
-    /* === POPUP NOTIFIKASI === */
-    .popup-overlay {
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.4);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
+    .popup-overlay, .loading-overlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      display:none; align-items:center; justify-content:center; z-index:9999;
     }
+    .popup-overlay{ background: rgba(0,0,0,0.4);}
     .popup-box {
-      background:white;
-      padding:20px 24px;
-      border-radius:14px;
-      box-shadow:0 8px 24px rgba(0,0,0,0.2);
-      max-width:300px;
-      text-align:center;
+      background:white; padding:20px 24px; border-radius:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.2); max-width:300px; text-align:center;
       animation: popIn 0.25s ease;
     }
-    .popup-box h4 {
-      margin:0 0 8px;
-      font-size:16px;
-      font-weight:700;
-    }
-    .popup-box p {
-      font-size:14px;
-      margin:0 0 14px;
-      color:#444;
-    }
+    .popup-box h4 {margin:0 0 8px; font-size:16px; font-weight:700;}
     .popup-btn {
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:600;
+      background:var(--accent); color:#fff; border:none; padding:8px 12px;
+      border-radius:8px; cursor:pointer; font-weight:600;
     }
 
-    /* === LOADING OVERLAY === */
-    .loading-overlay {
-      position: fixed;
-      top:0; left:0; right:0; bottom:0;
-      background: rgba(255,255,255,0.8);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      z-index:9998;
-    }
+    .loading-overlay{background: rgba(255,255,255,0.8); flex-direction:column;}
     .spinner {
-      border:4px solid #cbd5e1;
-      border-top:4px solid var(--accent);
-      border-radius:50%;
-      width:48px; height:48px;
-      animation: spin 1s linear infinite;
+      border:4px solid #cbd5e1; border-top:4px solid var(--accent);
+      border-radius:50%; width:48px; height:48px; animation: spin 1s linear infinite;
     }
-    .loading-text {
-      margin-top:12px;
-      font-weight:600;
-      color:#334155;
-    }
+    .loading-text {margin-top:12px; font-weight:600; color:#334155;}
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes popIn {
-      from { transform:scale(0.8); opacity:0; }
-      to { transform:scale(1); opacity:1; }
-    }
+    @keyframes popIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
   </style>
 </head>
 <body>
   <header>MCP Official Marketplace</header>
 
   <div class="wrap">
+
+    <div class="filter-bar">
+      <select id="categoryFilter" onchange="filterCategory()">
+        <option value="all">Semua Kategori</option>
+        <option value="makanan">Makanan</option>
+        <option value="minuman">Minuman</option>
+        <option value="alat_tulis">Alat Tulis</option>
+        <option value="pakaian">Pakaian</option>
+        <option value="obat">Obat-obatan</option>
+      </select>
+    </div>
+
     <div id="productGrid" class="grid"></div>
 
     <div class="cart">
@@ -170,117 +150,78 @@
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw83iZtNtr-Gv8slLFfahcgp6WT-_U8hBuYceLxUYvl7cfLa-P3LriodFfWczo6zrV3/exec";
-    let products = [
-      { name: "Buku Tulis Sinar Dunia (38 Lbr)", price: 5000, stock: 50 },
-      { name: "Pulpen Standard AE7", price: 4000, stock: 100 },
-      { name: "Penggaris 30cm", price: 3000, stock: 40 },
-      { name: "Pensil 2B Faber Castell", price: 3000, stock: 60 },
-      { name: "Penghapus Putih Joyko", price: 2000, stock: 80 },
-      { name: "Spidol Boardmarker", price: 7000, stock: 30 },
-      { name: "Buku Gambar A4", price: 7000, stock: 30 },
-      { name: "Tipe-X Joyko", price: 6000, stock: 50 },
-      { name: "Map Plastik Folio", price: 2500, stock: 70 },
-       { name: "Buku Tulis Sinar Dunia (38 Lbr)", price: 5000, stock: 80 },
-  { name: "Buku Tulis Kiky (58 Lbr)", price: 6500, stock: 60 },
-  { name: "Buku Gambar A4", price: 7000, stock: 50 },
-  { name: "Buku Catatan Kecil", price: 4000, stock: 70 },
-  { name: "Buku Agenda Harian", price: 15000, stock: 30 },
-  { name: "Buku Kas Sekolah", price: 9000, stock: 25 },
-  { name: "Kertas HVS A4 70gsm (1 Lbr)", price: 200, stock: 500 },
-  { name: "Kertas HVS A4 80gsm (1 Lbr)", price: 250, stock: 500 },
-  { name: "Kertas Origami (10 Lbr)", price: 4000, stock: 60 },
-  { name: "Kertas Karton Warna", price: 3000, stock: 80 },
-  { name: "Kertas Asturo Warna", price: 3500, stock: 70 },
 
-  // ===== ALAT TULIS KECIL =====
-  { name: "Pulpen Standard AE7", price: 4000, stock: 150 },
-  { name: "Pulpen Faster Biru", price: 3500, stock: 100 },
-  { name: "Pulpen Faster Hitam", price: 3500, stock: 100 },
-  { name: "Pulpen Faster Merah", price: 3500, stock: 80 },
-  { name: "Pensil 2B Faber Castell", price: 3000, stock: 100 },
-  { name: "Pensil Joyko HB", price: 2500, stock: 100 },
-  { name: "Rautan Pensil Mini", price: 2500, stock: 100 },
-  { name: "Penghapus Putih Joyko", price: 2000, stock: 120 },
-  { name: "Tipe-X Joyko", price: 6000, stock: 80 },
- 
+    const products = [
+      // === MAKANAN ===
+      { name: "Roti Coklat", price: 5000, stock: 30, category: "makanan" },
+      { name: "Keripik Singkong", price: 4000, stock: 40, category: "makanan" },
+      { name: "Mie Instan", price: 3500, stock: 60, category: "makanan" },
 
+      // === MINUMAN ===
+      { name: "Air Mineral 600ml", price: 3000, stock: 80, category: "minuman" },
+      { name: "Teh Botol Sosro", price: 5000, stock: 50, category: "minuman" },
+      { name: "Kopi Good Day", price: 4000, stock: 70, category: "minuman" },
 
+      // === ALAT TULIS ===
+      { name: "Buku Tulis Sinar Dunia (38 Lbr)", price: 5000, stock: 50, category: "alat_tulis" },
+      { name: "Pulpen Standard AE7", price: 4000, stock: 100, category: "alat_tulis" },
+      { name: "Penghapus Joyko", price: 2000, stock: 80, category: "alat_tulis" },
+      { name: "Penggaris 30cm", price: 3000, stock: 40, category: "alat_tulis" },
 
-  // ===== ALAT KANTOR / ADMIN =====
-  
+      // === PAKAIAN ===
+      { name: "Kaos Seragam Putih", price: 45000, stock: 20, category: "pakaian" },
+      { name: "Celana Panjang Sekolah", price: 60000, stock: 15, category: "pakaian" },
 
-  
-];
-   
-   
+      // === OBAT-OBATAN ===
+      { name: "Minyak Kayu Putih 60ml", price: 15000, stock: 25, category: "obat" },
+      { name: "Paracetamol Strip", price: 7000, stock: 40, category: "obat" }
+    ];
+
+    let filteredProducts = [...products];
     let cart = [];
 
-    // === POPUP ===
-    function showPopup(title, msg){
-      document.getElementById("popupTitle").textContent = title;
-      document.getElementById("popupMsg").textContent = msg;
-      document.getElementById("popup").style.display = "flex";
-    }
-    function closePopup(){
-      document.getElementById("popup").style.display = "none";
+    function filterCategory(){
+      const val = document.getElementById("categoryFilter").value;
+      filteredProducts = val === "all" ? products : products.filter(p => p.category === val);
+      renderProducts();
     }
 
-    // === LOADING ===
-    function showLoading(){
-      document.getElementById("loading").style.display = "flex";
-    }
-    function hideLoading(){
-      document.getElementById("loading").style.display = "none";
-    }
-
-    // === RENDER PRODUK ===
     function renderProducts(){
       const grid = document.getElementById("productGrid");
       grid.innerHTML = "";
-      products.forEach((p, idx) => {
+      filteredProducts.forEach((p, idx) => {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
           <div>
-            <div class="title">${escapeHtml(p.name)}</div>
-            <div class="price">Rp ${Number(p.price).toLocaleString()}</div>
-            <div class="stock">Stok: ${Number(p.stock).toLocaleString()}</div>
+            <div class="title">${p.name}</div>
+            <div class="price">Rp ${p.price.toLocaleString()}</div>
+            <div class="stock">Stok: ${p.stock}</div>
           </div>
           <div class="controls">
             <input type="number" id="qty-${idx}" class="qty" min="1" value="1" />
-            <button class="btn-order btn" onclick="orderIndex(${idx})">Tambah ke Keranjang</button>
-          </div>
-        `;
+            <button class="btn-order btn" onclick="orderProduct(${idx})">Tambah</button>
+          </div>`;
         grid.appendChild(card);
       });
     }
 
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
-    }
-
-    // === KERANJANG ===
-    function orderIndex(idx){
-      const qtyEl = document.getElementById(`qty-${idx}`);
-      let qty = parseInt(qtyEl?.value) || 1;
-      if(qty < 1) qty = 1;
-
-      const product = products[idx];
-      if(!product) return showPopup("Gagal", "Produk tidak ditemukan.");
-      if(product.stock < qty) return showPopup("Stok Habis", "Stok tidak mencukupi.");
+    function orderProduct(idx){
+      const qty = parseInt(document.getElementById(`qty-${idx}`).value);
+      const product = filteredProducts[idx];
+      if(!product || qty < 1) return;
+      if(product.stock < qty) return showPopup("Gagal", "Stok tidak cukup!");
 
       product.stock -= qty;
-
       const exist = cart.find(i => i.name === product.name);
       if(exist){
         exist.quantity += qty;
         exist.subtotal = exist.price * exist.quantity;
       } else {
-        cart.push({ name: product.name, price: product.price, quantity: qty, subtotal: product.price * qty });
+        cart.push({...product, quantity: qty, subtotal: product.price * qty});
       }
-      renderProducts();
       renderCart();
-      showPopup("Berhasil", `${qty}x ${product.name} ditambahkan ke keranjang.`);
+      renderProducts();
     }
 
     function renderCart(){
@@ -293,71 +234,59 @@
       }
       list.innerHTML = "";
       cart.forEach((it, idx) => {
-        const row = document.createElement("div");
-        row.className = "cart-item";
-        row.innerHTML = `<div>${escapeHtml(it.name)} (${it.quantity}x)</div>
-                         <div>Rp ${Number(it.subtotal).toLocaleString()} 
-                         <button style="margin-left:8px;padding:4px 6px;border-radius:6px;border:none;background:#ef4444;color:#fff;cursor:pointer" onclick="removeCartItem(${idx})">hapus</button>
-                         </div>`;
-        list.appendChild(row);
+        list.innerHTML += `<div class="cart-item"><div>${it.name} (${it.quantity}x)</div>
+          <div>Rp ${it.subtotal.toLocaleString()}
+          <button style="margin-left:6px;padding:4px 6px;border:none;background:#ef4444;color:#fff;border-radius:6px" onclick="removeCart(${idx})">hapus</button></div></div>`;
       });
-      const total = cart.reduce((s, i) => s + i.subtotal, 0);
-      totalEl.textContent = `Total: Rp ${Number(total).toLocaleString()}`;
+      const total = cart.reduce((a,b)=>a+b.subtotal,0);
+      totalEl.textContent = "Total: Rp " + total.toLocaleString();
     }
 
-    function removeCartItem(idx){
-      const it = cart[idx];
-      const p = products.find(x => x.name === it.name);
-      if(p) p.stock += it.quantity;
-      cart.splice(idx,1);
-      renderCart();
-      renderProducts();
+    function removeCart(i){
+      const it = cart[i];
+      const prod = products.find(p => p.name === it.name);
+      if(prod) prod.stock += it.quantity;
+      cart.splice(i,1);
+      renderCart(); renderProducts();
     }
 
     function clearCart(){
       cart.forEach(it => {
-        const p = products.find(x => x.name === it.name);
-        if(p) p.stock += it.quantity;
+        const prod = products.find(p => p.name === it.name);
+        if(prod) prod.stock += it.quantity;
       });
-      cart = [];
-      renderCart();
-      renderProducts();
-      showPopup("Keranjang", "Keranjang berhasil dikosongkan.");
+      cart=[]; renderCart(); renderProducts();
     }
 
-    // === CHECKOUT ===
+    function showPopup(t,m){
+      document.getElementById("popupTitle").textContent = t;
+      document.getElementById("popupMsg").textContent = m;
+      document.getElementById("popup").style.display="flex";
+    }
+    function closePopup(){document.getElementById("popup").style.display="none";}
+
     async function checkoutAll(){
-      if(cart.length === 0) return showPopup("Gagal", "Keranjang kosong.");
-      showLoading(); // tampilkan loading
-
-      const total = cart.reduce((s,i)=>s + i.subtotal, 0);
+      if(cart.length===0)return showPopup("Gagal","Keranjang kosong!");
+      document.getElementById("loading").style.display="flex";
+      const total = cart.reduce((s,i)=>s+i.subtotal,0);
       const payload = {
-        transactionId: "ORDER-" + Math.floor(Math.random() * 1000000),
-        timestamp: new Date().toISOString(),
-        total: total,
-        items: cart.map(i => ({ name: i.name, quantity: i.quantity, price: i.price, subtotal: i.subtotal }))
+        transactionId:"ORDER-"+Math.floor(Math.random()*1e6),
+        timestamp:new Date().toISOString(),
+        total:total,
+        items:cart
       };
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        hideLoading();
-        showPopup("Sukses", "✅ Checkout berhasil dikirim ke Pusat!");
-        cart = [];
-        renderCart();
-      } catch (err){
-        hideLoading();
-        console.error("fetch error:", err);
-        showPopup("Error", "❌ Gagal mengirim data. Cek koneksi atau console.");
+      try{
+        await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        document.getElementById("loading").style.display="none";
+        showPopup("Sukses","Checkout berhasil dikirim!");
+        cart=[]; renderCart();
+      }catch(e){
+        document.getElementById("loading").style.display="none";
+        showPopup("Error","Gagal kirim data!");
       }
     }
 
     renderProducts();
-    renderCart();
   </script>
 </body>
 </html>
