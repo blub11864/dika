@@ -278,10 +278,70 @@ async function checkoutAll(){
     await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     document.getElementById("loading").style.display="none";
     showPopup("Sukses","Transaksi berhasil dikirim!");
-    cart=[]; renderCart();
+showReceipt(transactionId, total, payload.items);
+cart=[]; renderCart();
   }catch(e){document.getElementById("loading").style.display="none";showPopup("Error","Gagal kirim data!");}
 }
+// === FITUR STRUK & DOWNLOAD PDF ===
+function showReceipt(transactionId, total, items) {
+  // buat elemen struk
+  const receiptBox = document.createElement("div");
+  receiptBox.id = "receiptBox";
+  receiptBox.style.cssText = `
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;
+    z-index:10000;
+  `;
+  receiptBox.innerHTML = `
+    <div id="receiptContent" style="
+      background:#fff; padding:20px; border-radius:12px;
+      width:300px; font-family:Arial; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+      text-align:center;
+    ">
+      <h3 style="margin:0 0 10px 0;">🧾 Struk Pembelian</h3>
+      <div style="font-size:13px;margin-bottom:10px;">ID Transaksi:<br><b>${transactionId}</b></div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px;">
+        <thead>
+          <tr style="border-bottom:1px solid #ddd;">
+            <th style="text-align:left;">Item</th>
+            <th style="text-align:right;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map(it=>`
+            <tr>
+              <td style="text-align:left;">${it.name} (${it.quantity}x)</td>
+              <td style="text-align:right;">Rp ${it.subtotal.toLocaleString()}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      <div style="border-top:1px solid #ddd;padding-top:8px;font-weight:bold;font-size:14px;">
+        Total: Rp ${total.toLocaleString()}
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:center;">
+        <button id="btnDownloadPDF" style="background:#2563eb;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;">⬇️ Download PDF</button>
+        <button onclick="closeReceipt()" style="background:#ef4444;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;">Tutup</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(receiptBox);
 
+  // tombol download PDF
+  document.getElementById("btnDownloadPDF").addEventListener("click", async () => {
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(document.querySelector("#receiptContent"));
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: [350, 500] });
+    pdf.addImage(imgData, "PNG", 10, 10, 330, 480);
+    pdf.save(`Struk_${transactionId}.pdf`);
+  });
+}
+
+function closeReceipt(){
+  const box = document.getElementById("receiptBox");
+  if(box) box.remove();
+}
 renderProducts();
 
 // === FITUR REKAP DATA (menggunakan OpenSheet) ===
